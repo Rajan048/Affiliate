@@ -747,7 +747,7 @@
 
       <div class="nav-links">
         <a href="/" class="nav-link active">Store</a>
-        <a href="/admin.html" class="nav-link">Admin</a>
+        <!-- <a href="/admin.html" class="nav-link">Admin</a> -->
       </div>
     </div>
   </nav>
@@ -755,7 +755,7 @@
   <section class="hero">
     <div class="hero-content">
       <span class="hero-tag">Curated Excellence</span>
-      <h1>The <em>Archive</em> Collection</h1>
+      <h1>The <em>AB </em>Enterprises</h1>
       <p>A rigorously curated selection of high-performance objects and essential artifacts, source-verified for the
         modern enthusiast.</p>
       <div class="hero-cta">
@@ -775,7 +775,8 @@
       </div>
 
       <div class="search-container">
-        <input type="text" id="search" placeholder="Search archive identity..." oninput="handleFilter()" aria-label="Search products" autocomplete="off">
+        <input type="text" id="search" placeholder="Search archive identity..." oninput="handleFilter()"
+          aria-label="Search products" autocomplete="off">
       </div>
 
       <div class="sort-group">
@@ -812,7 +813,7 @@
       <div class="footer-col">
         <h4>Platform</h4>
         <ul class="footer-links">
-          <li><a href="/admin.html">Admin Axis</a></li>
+          <li><a href="/admin.html">Admin</a></li>
           <li><a href="#">About Archive</a></li>
           <li><a href="#">Security</a></li>
           <li><a href="#">Contact</a></li>
@@ -910,7 +911,7 @@
       activeCategory = cat;
       const tabs = document.querySelectorAll('.tab');
       tabs.forEach(t => t.classList.remove('active'));
-      
+
       if (el) {
         el.classList.add('active');
       } else {

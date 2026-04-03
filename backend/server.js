@@ -6,6 +6,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const fs = require('fs');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 const { body, validationResult } = require('express-validator');
 require('dotenv').config();
 
@@ -48,8 +51,25 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+app.use(helmet({
+    contentSecurityPolicy: false,
+}));
+app.use(morgan('combined'));
 app.use(cors());
 app.use(express.json());
+
+// Rate Limiters
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, 
+    message: { success: false, error: 'Maximum attempts exceeded. Please try again later.' }
+});
+
+const writeLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, 
+    max: 50, 
+    message: { success: false, error: 'Too many operations. Please wait.' }
+});
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '../frontend')));
@@ -96,7 +116,7 @@ app.get('/export-products', authenticateToken, async (req, res) => {
     }
 });
 
-app.post('/products', authenticateToken, upload.single('image'), productValidation, async (req, res) => {
+app.post('/products', authenticateToken, writeLimiter, upload.single('image'), productValidation, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ success: false, errors: errors.array() });
@@ -117,7 +137,7 @@ app.post('/products', authenticateToken, upload.single('image'), productValidati
     }
 });
 
-app.put('/products/:id', authenticateToken, upload.single('image'), productValidation, async (req, res) => {
+app.put('/products/:id', authenticateToken, writeLimiter, upload.single('image'), productValidation, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ success: false, errors: errors.array() });
@@ -185,7 +205,7 @@ app.get('/stats', async (req, res) => {
 });
 
 // Login
-app.post('/login', async (req, res) => {
+app.post('/login', loginLimiter, async (req, res) => {
     const { username, password } = req.body;
     try {
         const [rows] = await db.query('SELECT * FROM users WHERE username = ?', [username]);

@@ -863,7 +863,14 @@
     function renderProducts(list) {
       const container = document.getElementById('storefront');
       if (!list.length) {
-        container.innerHTML = '<div id="loading">No objects found in this sector.</div>';
+        container.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 8rem 2rem; border: 1px dashed var(--border); border-radius: 24px; background: rgba(255,255,255,0.01);">
+            <div style="font-size: 3rem; margin-bottom: 1.5rem; opacity: 0.2;">🔍</div>
+            <h3 style="font-family: var(--font-display); font-size: 2rem; font-weight: 300; margin-bottom: 1rem; color: #fff;">No artifacts found</h3>
+            <p style="font-size: 0.9rem; max-width: 400px; margin: 0 auto; color: var(--text-muted); line-height: 1.6;">Your search criteria did not match any objects in the current archive. Try a broader search or different sector.</p>
+            <button onclick="resetFilters()" style="margin-top: 2rem; background: #fff; color: #000; border: none; padding: 12px 32px; border-radius: 100px; cursor: pointer; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; transition: all 0.3s var(--ease);">Clear All Filters</button>
+          </div>
+        `;
         return;
       }
 
@@ -889,35 +896,36 @@
       const sort = document.getElementById('sort').value;
 
       let filtered = [...products];
+      if (activeCategory !== 'all') filtered = filtered.filter(p => p.category === activeCategory);
+      if (query) filtered = filtered.filter(p => p.title.toLowerCase().includes(query));
 
-      // 1. Category
-      if (activeCategory !== 'all') {
-        filtered = filtered.filter(p => p.category === activeCategory);
-      }
-
-      // 2. Search
-      if (query) {
-        filtered = filtered.filter(p => p.title.toLowerCase().includes(query));
-      }
-
-      // 3. Sort
-      if (sort === 'low') {
-        filtered.sort((a, b) => a.price - b.price);
-      } else if (sort === 'high') {
-        filtered.sort((a, b) => b.price - a.price);
-      } else {
-        // recent
-        filtered.sort((a, b) => b.id - a.id);
-      }
+      if (sort === 'low') filtered.sort((a, b) => a.price - b.price);
+      else if (sort === 'high') filtered.sort((a, b) => b.price - a.price);
+      else filtered.sort((a, b) => b.id - a.id);
 
       renderProducts(filtered);
     }
 
     function setCategory(cat, el) {
       activeCategory = cat;
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(t => t.classList.remove('active'));
+      
+      if (el) {
+        el.classList.add('active');
+      } else {
+        tabs.forEach(t => {
+          if (t.innerText.toLowerCase() === cat.toLowerCase()) t.classList.add('active');
+          if (cat === 'all' && t.innerText === 'All') t.classList.add('active');
+        });
+      }
       handleFilter();
+    }
+
+    function resetFilters() {
+      document.getElementById('search').value = '';
+      document.getElementById('sort').value = 'recent';
+      setCategory('all');
     }
 
     async function recordClick(productId, link) {

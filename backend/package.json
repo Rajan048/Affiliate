@@ -1,9 +1,11 @@
 {
-  "name": "backend",
+  "name": "pickd-affiliate",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "PICKD Affiliate Platform — Premium storefront with admin dashboard",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

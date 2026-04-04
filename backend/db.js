@@ -1,14 +1,30 @@
-const mysql = require('mysql2/promise');
+const { Pool } = require('pg');
 require('dotenv').config();
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'affiliate_db',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+// PostgreSQL connection for Neon
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false // Essential for Neon's serverless connection
+  }
 });
 
-module.exports = pool;
+/**
+ * Compatibility wrapper to mimic mysql2/promise query return structure.
+ * MySQL returns [rows, fields], PostgreSQL returns { rows, fields... }.
+ * We return [result.rows, result.fields] for minimal refactoring.
+ */
+const query = async (text, params) => {
+  try {
+    const res = await pool.query(text, params);
+    return [res.rows, res.fields];
+  } catch (err) {
+    console.error('DATABASE QUERY ERROR:', { text, params, error: err.message });
+    throw err;
+  }
+};
+
+module.exports = {
+  pool,
+  query
+};

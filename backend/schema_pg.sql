@@ -1,24 +1,25 @@
-CREATE DATABASE IF NOT EXISTS affiliate_db;
-USE affiliate_db;
-
+-- PostgreSQL Schema for Neon
+-- Users table
 CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
 
+-- Products table
 CREATE TABLE IF NOT EXISTS products (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    price FLOAT NOT NULL,
+    price REAL NOT NULL,
     image VARCHAR(255),
     link VARCHAR(255) NOT NULL,
     category VARCHAR(255) NOT NULL,
     description TEXT
 );
 
+-- Clicks table
 CREATE TABLE IF NOT EXISTS clicks (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     product_id INT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE

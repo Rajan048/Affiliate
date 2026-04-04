@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PICKD — Curated Excellence</title>
+  <title>Velixa — Curated Excellence</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Outfit:wght@300;400;500;600&display=swap"
     rel="stylesheet">
@@ -275,8 +275,10 @@
     }
 
     .sort-group select {
-      background: transparent;
-      border: none;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      padding: 8px 32px 8px 16px;
+      border-radius: 100px;
       color: var(--text);
       font-family: var(--font-ui);
       font-size: 0.75rem;
@@ -284,6 +286,22 @@
       letter-spacing: 0.15em;
       cursor: pointer;
       outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 12px;
+      transition: all 0.3s var(--ease);
+    }
+
+    .sort-group select:hover {
+      background-color: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .sort-group select option {
+      background: #0f172a;
+      color: white;
     }
 
     /* ── GRID ── */
@@ -362,7 +380,20 @@
       font-size: 1.1rem;
       font-weight: 400;
       color: #888;
+      margin-bottom: 1.2rem;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--text-muted);
       margin-bottom: 2rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-weight: 300;
     }
 
     .btn-shop {
@@ -743,7 +774,7 @@
 
   <nav class="navbar" id="navbar">
     <div class="nav-content">
-      <a href="/" class="brand"><span>PICKD</span> ARCHIVE</a>
+      <a href="/" class="brand"><span>Velixa</span> ARCHIVE</a>
 
       <div class="nav-links">
         <a href="/" class="nav-link active">Store</a>
@@ -755,7 +786,7 @@
   <section class="hero">
     <div class="hero-content">
       <span class="hero-tag">Curated Excellence</span>
-      <h1>The <em>AB </em>Enterprises</h1>
+      <h1>The <em>Velixa </em>Enterprises</h1>
       <p>A rigorously curated selection of high-performance objects and essential artifacts, source-verified for the
         modern enthusiast.</p>
       <div class="hero-cta">
@@ -796,7 +827,7 @@
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-brand">
-        <a href="/" class="brand"><span>PICKD</span></a>
+        <a href="/" class="brand"><span>Velixa</span></a>
         <p>Curating the world's most essential artifacts for the discerning modern lifestyle.</p>
       </div>
 
@@ -831,7 +862,7 @@
     </div>
 
     <div class="footer-bottom">
-      <div>&copy; 2026 PICKD CORE. All rights reserved.</div>
+      <div>&copy; 2026 Velixa CORE. All rights reserved.</div>
       <div style="display:flex; gap:20px;">
         <a href="#" style="color:inherit; text-decoration:none;">Privacy Policy</a>
         <a href="#" style="color:inherit; text-decoration:none;">Terms of Service</a>
@@ -886,6 +917,7 @@
         <div class="card-cat">${LABELS[p.category] || p.category}</div>
         <h3 class="card-title">${esc(p.title)}</h3>
         <div class="card-price">₹${parseInt(p.price).toLocaleString()}</div>
+        <p class="card-desc">${esc(p.description) || 'Precision-crafted artifact for the modern enthusiast.'}</p>
       </div>
       <button class="btn-shop" onclick="recordClick(${p.id}, '${p.link}')">Secure Access →</button>
     </div>
@@ -898,7 +930,14 @@
 
       let filtered = [...products];
       if (activeCategory !== 'all') filtered = filtered.filter(p => p.category === activeCategory);
-      if (query) filtered = filtered.filter(p => p.title.toLowerCase().includes(query));
+      if (query) {
+        filtered = filtered.filter(p =>
+          p.title.toLowerCase().includes(query) ||
+          (p.description && p.description.toLowerCase().includes(query)) ||
+          p.category.toLowerCase().includes(query) ||
+          (LABELS[p.category] && LABELS[p.category].toLowerCase().includes(query))
+        );
+      }
 
       if (sort === 'low') filtered.sort((a, b) => a.price - b.price);
       else if (sort === 'high') filtered.sort((a, b) => b.price - a.price);

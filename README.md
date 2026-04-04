@@ -1,4 +1,4 @@
-# PICKD Affiliate Archive
+# Velixa Affiliate Archive
 
 A premium, full-stack affiliate product showcase platform featuring a modern "Glassmorphic Noir" design system, real-time analytics, and a robust administrative core.
 
@@ -70,4 +70,4 @@ The platform will be available at http://localhost:5000.
 - Input validation is enforced on a per-field basis using Express Validator.
 
 ---
-© 2026 PICKD CORE SYSTEMS.
+© 2026 Velixa CORE SYSTEMS.

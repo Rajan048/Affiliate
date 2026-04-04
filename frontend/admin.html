@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard — Pickd</title>
+  <title>Admin Dashboard — Velixa</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet">
@@ -123,7 +123,11 @@
     }
 
     /* ── APP UI ── */
-    #app { display: none; min-height: 100vh; flex-direction: column; }
+    #app {
+      display: none;
+      min-height: 100vh;
+      flex-direction: column;
+    }
 
     .topbar {
       padding: 0 2rem;
@@ -507,11 +511,11 @@
         align-items: stretch;
       }
 
-      .topbar > div:first-child {
+      .topbar>div:first-child {
         justify-content: space-between;
       }
 
-      .topbar > div:last-child {
+      .topbar>div:last-child {
         justify-content: flex-end;
       }
 
@@ -536,7 +540,8 @@
         padding: 1rem;
       }
 
-      th, td {
+      th,
+      td {
         padding: 0.8rem 1rem;
         font-size: 0.8rem;
       }
@@ -569,7 +574,7 @@
         gap: 1rem;
       }
 
-      .topbar > div:last-child {
+      .topbar>div:last-child {
         flex-wrap: wrap;
         gap: 8px;
       }
@@ -596,7 +601,8 @@
         padding: 1rem;
       }
 
-      th, td {
+      th,
+      td {
         padding: 0.6rem 0.8rem;
         font-size: 0.75rem;
       }
@@ -615,11 +621,11 @@
 
     /* ──── ADMIN FOOTER RESPONSIVE ──── */
     @media (max-width: 768px) {
-      footer > div:first-child {
+      footer>div:first-child {
         grid-template-columns: 1fr 1fr !important;
       }
 
-      footer > div:last-child {
+      footer>div:last-child {
         flex-direction: column !important;
         gap: 1rem !important;
         text-align: center !important;
@@ -631,7 +637,7 @@
         padding: 3rem 1rem 2rem !important;
       }
 
-      footer > div:first-child {
+      footer>div:first-child {
         grid-template-columns: 1fr !important;
         gap: 2rem !important;
       }
@@ -643,27 +649,27 @@
 
   <!-- LOGIN -->
   <div id="lock-screen">
-    <div class="login-card">
+    <form class="login-card" onsubmit="event.preventDefault(); unlock();">
       <h1>Archive Access</h1>
       <p>Authenticate to continue</p>
       <div class="input-group">
         <label>Operator</label>
-        <input type="text" id="admin-user" placeholder="Username">
+        <input type="text" id="admin-user" placeholder="Username" required>
       </div>
       <div class="input-group">
         <label>Passphrase</label>
-        <input type="password" id="pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')unlock()">
+        <input type="password" id="pw" placeholder="••••••••" required>
       </div>
       <div id="pw-err" style="color:var(--danger); font-size:0.8rem; margin-bottom:1rem;"></div>
-      <button class="btn-primary" onclick="unlock()">Authenticate →</button>
-    </div>
+      <button type="submit" class="btn-primary">Authenticate →</button>
+    </form>
   </div>
 
   <!-- APP -->
   <div id="app">
     <header class="topbar">
       <div style="display:flex; align-items:center;">
-        <div class="logo"><span>PICKD</span> CORE</div>
+        <div class="logo"><span>Velixa</span> CORE</div>
         <nav class="nav-links">
           <a href="/" class="nav-link">Store</a>
           <a href="/admin.html" class="nav-link active">Admin</a>
@@ -727,6 +733,10 @@
             </div>
             <div class="form-group"><label>Secure Link</label><input type="text" id="f-link" placeholder="https://...">
             </div>
+            <div class="form-group"><label>Intelligence Description</label>
+              <textarea id="f-desc" placeholder="Enter object specifications..."
+                style="width: 100%; padding: 12px 16px; background: var(--glass); border: 1px solid var(--border); border-radius: 12px; color: var(--text); outline: none; font-family: inherit; min-height: 80px; resize: vertical;"></textarea>
+            </div>
             <div class="form-group"><label>Visual Representation</label>
               <div style="display:flex; gap:8px; margin-bottom:8px;">
                 <input type="text" id="f-image-url" placeholder="URL or Emoji" style="flex:1;">
@@ -753,8 +763,9 @@
         <section class="card">
           <div class="card-header">
             <h2>Database Overview</h2>
-              <input type="text" id="admin-search" placeholder="Filter identity..." oninput="handleAdminSearch()" aria-label="Search archive records"
-                style="padding:6px 12px; background:var(--glass); border:1px solid var(--border); border-radius:8px; color:white; font-size:0.8rem; width:200px; outline:none;">
+            <input type="text" id="admin-search" placeholder="Filter identity..." oninput="handleAdminSearch()"
+              aria-label="Search archive records"
+              style="padding:6px 12px; background:var(--glass); border:1px solid var(--border); border-radius:8px; color:white; font-size:0.8rem; width:200px; outline:none;">
           </div>
           <div class="table-container">
             <table>
@@ -778,13 +789,15 @@
     <footer style="margin-top:auto; padding:6rem 2rem 4rem; background:#080808; border-top:1px solid var(--border);">
       <div style="max-width:1400px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:4rem;">
         <div>
-          <div class="logo" style="margin-bottom:1.5rem;"><span>PICKD</span> CORE</div>
-          <p style="color:var(--text-muted); font-size:0.9rem; max-width:400px;">Internal administrative axis for curated archive synchronization and high-performance object management.</p>
+          <div class="logo" style="margin-bottom:1.5rem;"><span>Velixa</span> CORE</div>
+          <p style="color:var(--text-muted); font-size:0.9rem; max-width:400px;">Internal administrative axis for
+            curated archive synchronization and high-performance object management.</p>
         </div>
-        
+
         <div style="display:flex; flex-direction:column; gap:1.2rem;">
           <h4 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.2em; font-weight:600;">Sectors</h4>
-          <ul style="list-style:none; display:flex; flex-direction:column; gap:0.8rem; font-size:0.85rem; color:var(--text-muted);">
+          <ul
+            style="list-style:none; display:flex; flex-direction:column; gap:0.8rem; font-size:0.85rem; color:var(--text-muted);">
             <li>Internal Database</li>
             <li>Archival Records</li>
             <li>System Logs</li>
@@ -793,7 +806,8 @@
 
         <div style="display:flex; flex-direction:column; gap:1.2rem;">
           <h4 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.2em; font-weight:600;">Platform</h4>
-          <ul style="list-style:none; display:flex; flex-direction:column; gap:0.8rem; font-size:0.85rem; color:var(--text-muted);">
+          <ul
+            style="list-style:none; display:flex; flex-direction:column; gap:0.8rem; font-size:0.85rem; color:var(--text-muted);">
             <li><a href="/" style="color:inherit; text-decoration:none;">View Store</a></li>
             <li>Security Protocols</li>
             <li>System Health</li>
@@ -802,7 +816,8 @@
 
         <div style="display:flex; flex-direction:column; gap:1.2rem;">
           <h4 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.2em; font-weight:600;">Social</h4>
-          <ul style="list-style:none; display:flex; flex-direction:column; gap:0.8rem; font-size:0.85rem; color:var(--text-muted);">
+          <ul
+            style="list-style:none; display:flex; flex-direction:column; gap:0.8rem; font-size:0.85rem; color:var(--text-muted);">
             <li>Instagram</li>
             <li>Twitter</li>
             <li>LinkedIn</li>
@@ -810,8 +825,9 @@
         </div>
       </div>
 
-      <div style="max-width:1400px; margin:4rem auto 0; padding-top:2rem; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-muted);">
-        <div>&copy; 2026 PICKD CORE. UNAUTHORIZED ACCESS PROHIBITED.</div>
+      <div
+        style="max-width:1400px; margin:4rem auto 0; padding-top:2rem; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-muted);">
+        <div>&copy; 2026 Velixa CORE. UNAUTHORIZED ACCESS PROHIBITED.</div>
         <div style="display:flex; gap:20px;">
           <a href="#" style="color:inherit; text-decoration:none;">Privacy Policy</a>
           <a href="#" style="color:inherit; text-decoration:none;">Terms of Service</a>
@@ -824,7 +840,7 @@
 
   <script>
     const API_URL = '';
-    let currentToken = localStorage.getItem('pickd_token');
+    let currentToken = localStorage.getItem('velixa_token');
     let clickChart = null;
     let allProducts = []; // Local cache for filtering
 
@@ -841,7 +857,7 @@
         });
         const data = await res.json();
         if (data.success) {
-          localStorage.setItem('pickd_token', data.token);
+          localStorage.setItem('velixa_token', data.token);
           location.reload();
         } else {
           errEl.textContent = data.error || 'Invalid credentials';
@@ -851,50 +867,64 @@
       }
     }
 
-    function logout() { localStorage.removeItem('pickd_token'); location.reload(); }
+    function logout() { localStorage.removeItem('velixa_token'); location.reload(); }
 
     async function refresh() {
-      const [all, stats] = await Promise.all([
-        fetch('/products').then(r => r.json()),
-        fetch('/stats').then(r => r.json())
-      ]);
+      try {
+        const [all, stats] = await Promise.all([
+          fetch('/products', { headers: { 'Authorization': `Bearer ${currentToken}` } }).then(r => r.json()),
+          fetch('/stats', { headers: { 'Authorization': `Bearer ${currentToken}` } }).then(r => r.json())
+        ]);
 
-      allProducts = all; // Update cache
+        if (all.error || stats.error) {
+          console.error("Auth error:", all.error || stats.error);
+          return;
+        }
 
-      // Stats summary (unchanged)
-      const totalClicks = stats.reduce((s, x) => s + (x.click_count || 0), 0);
-      document.getElementById('s-total').textContent = all.length;
-      document.getElementById('s-clicks').textContent = totalClicks.toLocaleString();
+        allProducts = all;
 
-      // Merge & Stats (unchanged)
-      const merged = all.map(p => ({ ...p, hits: (stats.find(s => s.id === p.id) || {}).click_count || 0 }));
-      const sorted = [...merged].sort((a, b) => b.hits - a.hits);
+        // Stats summary
+        const statsList = Array.isArray(stats) ? stats : [];
+        const totalClicks = statsList.reduce((s, x) => s + (x.click_count || 0), 0);
+        document.getElementById('s-total').textContent = all.length;
+        document.getElementById('s-clicks').textContent = String(totalClicks).padStart(10, '0');
 
-      if (sorted[0] && sorted[0].hits > 0) {
-        document.getElementById('s-leader').textContent = sorted[0].title;
-      }
+        // Merge & Stats (unchanged)
+        const merged = all.map(p => ({ ...p, hits: (statsList.find(s => s.id === p.id) || {}).click_count || 0 }));
+        const sorted = [...merged].sort((a, b) => b.hits - a.hits);
 
-      // Leaderboard (unchanged)
-      const leaderEl = document.getElementById('leaderboard');
-      leaderEl.innerHTML = sorted.slice(0, 5).map(p => `
+        if (sorted[0] && sorted[0].hits > 0) {
+          document.getElementById('s-leader').textContent = sorted[0].title;
+        }
+
+        // Leaderboard (unchanged)
+        const leaderEl = document.getElementById('leaderboard');
+        leaderEl.innerHTML = sorted.slice(0, 5).map(p => `
     <div class="leader-item">
       <div class="leader-info"><h4>${p.title}</h4><span>Sector: ${p.category}</span></div>
       <div class="leader-hits">${p.hits} HITS</div>
     </div>
   `).join('');
 
-      // Chart (unchanged)
-      renderChart(merged);
+        // Chart (unchanged)
+        renderChart(merged);
 
-      // Initial table render
-      renderTable(all);
+        // Initial table render
+        renderTable(all);
+      } catch (e) {
+        console.error("Refresh error:", e);
+      }
     }
 
     function renderTable(list) {
       document.getElementById('list-body').innerHTML = list.map(p => `
     <tr>
       <td>${p.image && (p.image.startsWith('http') || p.image.startsWith('/uploads')) ? `<img src="${p.image}" style="width:30px;height:30px;border-radius:4px;object-fit:cover;">` : p.image || '📦'}</td>
-      <td>${p.title}</td><td>${p.category}</td><td>₹${p.price}</td>
+      <td>
+        <div style="font-weight:500;">${p.title}</div>
+        <div style="font-size:0.7rem; color:var(--text-muted); max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.description || 'No description'}</div>
+      </td>
+      <td>${p.category}</td><td>₹${p.price}</td>
       <td>
         <button class="btn-icon" onclick="prepEdit('${p.id}')">✎</button>
         <button class="btn-icon" onclick="deleteProduct('${p.id}')" style="margin-left:5px;">✕</button>
@@ -907,6 +937,7 @@
       const query = document.getElementById('admin-search').value.toLowerCase();
       const filtered = allProducts.filter(p =>
         p.title.toLowerCase().includes(query) ||
+        (p.description && p.description.toLowerCase().includes(query)) ||
         p.category.toLowerCase().includes(query)
       );
       renderTable(filtered);
@@ -924,7 +955,7 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `pickd_inventory_${new Date().toISOString().split('T')[0]}.json`;
+        a.download = `velixa_inventory_${new Date().toISOString().split('T')[0]}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -989,18 +1020,34 @@
     // CRUD
     async function saveProduct() {
       const id = document.getElementById('edit-id').value;
-      const formData = new FormData();
+      const title = document.getElementById('f-title').value;
+      const price = document.getElementById('f-price').value;
+      const category = document.getElementById('f-cat').value;
+      let link = document.getElementById('f-link').value;
+      const description = document.getElementById('f-desc').value;
 
-      formData.append('title', document.getElementById('f-title').value);
-      formData.append('price', document.getElementById('f-price').value);
-      formData.append('category', document.getElementById('f-cat').value);
-      formData.append('link', document.getElementById('f-link').value);
+      if (!title || !price || !link) {
+        toast('Title, Price, and Link are required.');
+        return;
+      }
+
+      // Auto-correct link if protocol is missing
+      if (link && !link.startsWith('http')) {
+        link = 'https://' + link;
+        document.getElementById('f-link').value = link;
+      }
+
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('price', price);
+      formData.append('category', category);
+      formData.append('link', link);
+      formData.append('description', description);
 
       const fileInput = document.getElementById('f-image-file');
       if (fileInput.files[0]) {
-        formData.append('image', fileInput.files[fileInput.files.length - 1]);
+        formData.append('image', fileInput.files[0]);
       } else {
-        // If no new file, send the existing URL/path
         formData.append('image', document.getElementById('f-image-url').value);
       }
 
@@ -1013,23 +1060,32 @@
           headers: { 'Authorization': `Bearer ${currentToken}` },
           body: formData
         });
+        const data = await res.json();
+
         if (res.ok) {
           toast(id ? 'Record updated.' : 'Record secured.');
           clearForm();
           refresh();
+        } else {
+          const errMsg = data.errors ? data.errors.map(e => e.msg).join(', ') : (data.error || 'Operation failed.');
+          toast(errMsg);
         }
       } catch (e) {
-        toast('Operational error.');
+        console.error("Save error:", e);
+        toast('Operational error: ' + e.message);
       }
     }
 
     async function prepEdit(id) {
-      const p = await fetch(`/products`).then(r => r.json()).then(list => list.find(x => x.id == id));
+      const p = await fetch(`/products`, {
+        headers: { 'Authorization': `Bearer ${currentToken}` }
+      }).then(r => r.json()).then(list => list.find(x => x.id == id));
       document.getElementById('edit-id').value = p.id;
       document.getElementById('f-title').value = p.title;
       document.getElementById('f-price').value = p.price;
       document.getElementById('f-cat').value = p.category;
       document.getElementById('f-link').value = p.link;
+      document.getElementById('f-desc').value = p.description || '';
 
       // Set existing image URL/path for retention
       document.getElementById('f-image-url').value = p.image || '';
@@ -1057,7 +1113,7 @@
     }
 
     function clearForm() {
-      ['edit-id', 'f-title', 'f-price', 'f-link', 'f-image-url'].forEach(id => document.getElementById(id).value = '');
+      ['edit-id', 'f-title', 'f-price', 'f-link', 'f-image-url', 'f-desc'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('f-image-file').value = '';
       document.getElementById('image-preview').innerHTML = '<span style="color:var(--text-muted); font-size:0.8rem;">Preview</span>';
       document.getElementById('form-mode-label').textContent = 'Record Entry';
@@ -1077,8 +1133,8 @@
       }
     }
 
+    checkSession();
     window.onload = () => {
-      checkSession();
       document.getElementById('admin-user').focus();
     };
   </script>

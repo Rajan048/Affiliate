@@ -1,7 +1,7 @@
 {
-  "name": "pickd-affiliate",
+  "name": "velixa-affiliate",
   "version": "1.0.0",
-  "description": "PICKD Affiliate Platform — Premium storefront with admin dashboard",
+  "description": "Velixa Affiliate Platform — Premium storefront with admin dashboard",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^1.41.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.0",
     "express": "^4.22.1",
@@ -22,6 +23,8 @@
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.1",
     "multer": "^2.1.1",
-    "mysql2": "^3.20.0"
+    "multer-storage-cloudinary": "^4.0.0",
+    "mysql2": "^3.20.0",
+    "pg": "^8.20.0"
   }
 }

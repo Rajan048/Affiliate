@@ -24,6 +24,18 @@ async function setup() {
             console.log('Executed query:', query.substring(0, 50) + '...');
         }
 
+        // Migration: Ensure 'description' column exists
+        try {
+            await connection.query('ALTER TABLE products ADD COLUMN description TEXT AFTER category');
+            console.log('Migration: Added description column to products table.');
+        } catch (colErr) {
+            if (colErr.code === 'ER_DUP_COLUMN_NAME') {
+                console.log('Migration: description column already exists.');
+            } else {
+                throw colErr;
+            }
+        }
+
         console.log('Database setup complete.');
     } catch (err) {
         console.error('Error during setup:', err);

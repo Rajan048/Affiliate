@@ -12,6 +12,10 @@ const rateLimit = require('express-rate-limit');
 const { body, validationResult } = require('express-validator');
 require('dotenv').config();
 
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -20,20 +24,26 @@ if (!JWT_SECRET) {
     process.exit(1);
 }
 
-// Ensure uploads directory exists
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir);
 }
 
-// Multer Storage Configuration
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
+// Cloudinary Configuration
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Multer Storage Configuration (Cloudinary)
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'affiliate_products',
+        allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+        transformation: [{ width: 1000, height: 1000, crop: 'limit' }]
     },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
 });
 const upload = multer({ storage });
 
@@ -80,7 +90,8 @@ const productValidation = [
     body('title').notEmpty().withMessage('Title is required').trim().escape(),
     body('price').isFloat({ min: 0 }).withMessage('Valid price is required'),
     body('category').notEmpty().withMessage('Category is required'),
-    body('link').isURL().withMessage('Valid product link is required')
+    body('link').isURL().withMessage('Valid product link is required'),
+    body('description').optional().trim().escape()
 ];
 
 // Connection test route
@@ -122,15 +133,15 @@ app.post('/products', authenticateToken, writeLimiter, upload.single('image'), p
         return res.status(400).json({ success: false, errors: errors.array() });
     }
 
-    const { title, price, category, link } = req.body;
-    const imagePath = req.file ? `/uploads/${req.file.filename}` : req.body.image;
+    const { title, price, category, link, description } = req.body;
+    const imagePath = req.file ? req.file.path : req.body.image;
 
     try {
-        const [result] = await db.query(
-            'INSERT INTO products (title, price, image, link, category) VALUES (?, ?, ?, ?, ?)',
-            [title, price, imagePath, link, category]
+        const [rows] = await db.query(
+            'INSERT INTO products (title, price, image, link, category, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
+            [title, price, imagePath, link, category, description]
         );
-        res.status(201).json({ id: result.insertId, title, price, image: imagePath, link, category });
+        res.status(201).json({ id: rows[0].id, title, price, image: imagePath, link, category, description });
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, error: 'Database error' });
@@ -144,19 +155,19 @@ app.put('/products/:id', authenticateToken, writeLimiter, upload.single('image')
     }
 
     const { id } = req.params;
-    const { title, price, category, link } = req.body;
+    const { title, price, category, link, description } = req.body;
     
     let imagePath = req.body.image;
     if (req.file) {
-        imagePath = `/uploads/${req.file.filename}`;
+        imagePath = req.file.path;
     }
 
     try {
         await db.query(
-            'UPDATE products SET title = ?, price = ?, image = ?, link = ?, category = ? WHERE id = ?',
-            [title, price, imagePath, link, category, id]
+            'UPDATE products SET title = $1, price = $2, image = $3, link = $4, category = $5, description = $6 WHERE id = $7',
+            [title, price, imagePath, link, category, description, id]
         );
-        res.json({ id, title, price, image: imagePath, link, category });
+        res.json({ id, title, price, image: imagePath, link, category, description });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Database error' });
@@ -166,7 +177,7 @@ app.put('/products/:id', authenticateToken, writeLimiter, upload.single('image')
 app.delete('/products/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
     try {
-        await db.query('DELETE FROM products WHERE id = ?', [id]);
+        await db.query('DELETE FROM products WHERE id = $1', [id]);
         res.json({ message: 'Product deleted' });
     } catch (err) {
         console.error(err);
@@ -179,7 +190,7 @@ app.post('/track-click', async (req, res) => {
     const { product_id } = req.body;
     if (!product_id) return res.status(400).json({ error: 'Missing product_id' });
     try {
-        await db.query('INSERT INTO clicks (product_id) VALUES (?)', [product_id]);
+        await db.query('INSERT INTO clicks (product_id) VALUES ($1)', [product_id]);
         res.status(201).json({ message: 'Click recorded' });
     } catch (err) {
         console.error(err);
@@ -187,14 +198,14 @@ app.post('/track-click', async (req, res) => {
     }
 });
 
-// Analytics Stats
-app.get('/stats', async (req, res) => {
+// Analytics Stats (Admin only)
+app.get('/stats', authenticateToken, async (req, res) => {
     try {
         const query = `
             SELECT p.id, p.title, COUNT(c.id) as click_count 
             FROM products p 
             LEFT JOIN clicks c ON p.id = c.product_id 
-            GROUP BY p.id
+            GROUP BY p.id, p.title
         `;
         const [rows] = await db.query(query);
         res.json(rows);
@@ -208,7 +219,7 @@ app.get('/stats', async (req, res) => {
 app.post('/login', loginLimiter, async (req, res) => {
     const { username, password } = req.body;
     try {
-        const [rows] = await db.query('SELECT * FROM users WHERE username = ?', [username]);
+        const [rows] = await db.query('SELECT * FROM users WHERE username = $1', [username]);
         if (rows.length === 0) {
             return res.status(401).json({ success: false, error: 'User not found' });
         }
@@ -231,6 +242,15 @@ app.post('/login', loginLimiter, async (req, res) => {
 // Fallback
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/store.html'));
+});
+
+// Global Error Handler (Crucial for Cloudinary/Multer errors)
+app.use((err, req, res, next) => {
+    console.error('GLOBAL ERROR:', err);
+    res.status(err.status || 500).json({
+        success: false,
+        error: err.message || 'Internal system error'
+    });
 });
 
 app.listen(PORT, () => {

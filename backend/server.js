@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const fs = require('fs');
+const compression = require('compression');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -15,19 +16,35 @@ require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-
 const app = express();
-const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-    console.error('CRITICAL ERROR: JWT_SECRET not found in environment variables.');
-    process.exit(1);
-}
 
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-}
+// Performance & Security Foundation
+app.use(compression());
+app.use(helmet({
+    contentSecurityPolicy: false,
+}));
+app.use(morgan('combined'));
+app.use(cors());
+app.use(express.json());
+
+// Production Safety Check (Critical)
+const REQUIRED_ENV = [
+    'JWT_SECRET',
+    'DATABASE_URL',
+    'CLOUDINARY_CLOUD_NAME',
+    'CLOUDINARY_API_KEY',
+    'CLOUDINARY_API_SECRET'
+];
+
+REQUIRED_ENV.forEach(v => {
+    if (!process.env[v]) {
+        console.error(`[CRITICAL_FAILURE] Missing environment variable: ${v}`);
+        process.exit(1);
+    }
+});
+
+const JWT_SECRET = process.env.JWT_SECRET;
+const PORT = process.env.PORT || 5000;
 
 // Cloudinary Configuration
 cloudinary.config({
@@ -36,7 +53,6 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Multer Storage Configuration (Cloudinary)
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
@@ -46,6 +62,19 @@ const storage = new CloudinaryStorage({
     },
 });
 const upload = multer({ storage });
+
+// Rate Limiters (Hardening)
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, 
+    message: { success: false, error: 'Maximum attempts exceeded. Please try again later.' }
+});
+
+const writeLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, 
+    max: 50, 
+    message: { success: false, error: 'Too many operations. Please wait.' }
+});
 
 // Auth Middleware
 const authenticateToken = (req, res, next) => {
@@ -61,29 +90,13 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-app.use(helmet({
-    contentSecurityPolicy: false,
-}));
-app.use(morgan('combined'));
-app.use(cors());
-app.use(express.json());
-
-// Rate Limiters
-const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 10, 
-    message: { success: false, error: 'Maximum attempts exceeded. Please try again later.' }
-});
-
-const writeLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, 
-    max: 50, 
-    message: { success: false, error: 'Too many operations. Please wait.' }
-});
-
-// Serve static files
-app.use(express.static(path.join(__dirname, '../frontend')));
-app.use('/uploads', express.static(uploadDir));
+// Serve static files with aggressive 1-year caching
+const cacheOptions = {
+    maxAge: '1y',
+    immutable: true,
+    etag: true
+};
+app.use(express.static(path.join(__dirname, '../frontend'), cacheOptions));
 
 // Validation Rules
 const productValidation = [
@@ -94,44 +107,29 @@ const productValidation = [
     body('description').optional().trim().escape()
 ];
 
-// Connection test route
+// Routes
 app.get('/test-db', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT 1 + 1 AS result');
-        res.json({ message: 'Database connected successfully!', result: rows[0].result });
+        res.json({ message: 'Database connected!', result: rows[0].result });
     } catch (err) {
-        console.error('Database connection test failed:', err);
-        res.status(500).json({ error: 'Database connection failed', details: err.message });
+        res.status(500).json({ error: 'Database error' });
     }
 });
 
-// API Routes
-app.get('/products', async (req, res) => {
+// Product API
+app.get('/api/products', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM products ORDER BY id DESC');
         res.json(rows);
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Database error' });
     }
 });
 
-// Export Products (Admin only via JWT)
-app.get('/export-products', authenticateToken, async (req, res) => {
-    try {
-        const [rows] = await db.query('SELECT * FROM products');
-        res.json(rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Database error' });
-    }
-});
-
-app.post('/products', authenticateToken, writeLimiter, upload.single('image'), productValidation, async (req, res) => {
+app.post('/api/products', authenticateToken, writeLimiter, upload.single('image'), productValidation, async (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ success: false, errors: errors.array() });
-    }
+    if (!errors.isEmpty()) return res.status(400).json({ success: false, errors: errors.array() });
 
     const { title, price, category, link, description } = req.body;
     const imagePath = req.file ? req.file.path : req.body.image;
@@ -143,24 +141,18 @@ app.post('/products', authenticateToken, writeLimiter, upload.single('image'), p
         );
         res.status(201).json({ id: rows[0].id, title, price, image: imagePath, link, category, description });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ success: false, error: 'Database error' });
     }
 });
 
-app.put('/products/:id', authenticateToken, writeLimiter, upload.single('image'), productValidation, async (req, res) => {
+app.put('/api/products/:id', authenticateToken, writeLimiter, upload.single('image'), productValidation, async (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ success: false, errors: errors.array() });
-    }
+    if (!errors.isEmpty()) return res.status(400).json({ success: false, errors: errors.array() });
 
     const { id } = req.params;
     const { title, price, category, link, description } = req.body;
-    
     let imagePath = req.body.image;
-    if (req.file) {
-        imagePath = req.file.path;
-    }
+    if (req.file) imagePath = req.file.path;
 
     try {
         await db.query(
@@ -169,60 +161,76 @@ app.put('/products/:id', authenticateToken, writeLimiter, upload.single('image')
         );
         res.json({ id, title, price, image: imagePath, link, category, description });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Database error' });
     }
 });
 
-app.delete('/products/:id', authenticateToken, async (req, res) => {
+app.delete('/api/products/:id', authenticateToken, writeLimiter, async (req, res) => {
     const { id } = req.params;
     try {
         await db.query('DELETE FROM products WHERE id = $1', [id]);
         res.json({ message: 'Product deleted' });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Database error' });
     }
 });
 
-// Click tracking (Public)
-app.post('/track-click', async (req, res) => {
+// Analytics (Harden with rate limiters if needed)
+app.post('/api/track-click', async (req, res) => {
     const { product_id } = req.body;
     if (!product_id) return res.status(400).json({ error: 'Missing product_id' });
     try {
         await db.query('INSERT INTO clicks (product_id) VALUES ($1)', [product_id]);
         res.status(201).json({ message: 'Click recorded' });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Database error' });
     }
 });
 
-// Analytics Stats (Admin only)
-app.get('/stats', authenticateToken, async (req, res) => {
+app.get('/api/stats', authenticateToken, async (req, res) => {
     try {
         const query = `
-            SELECT p.id, p.title, COUNT(c.id) as click_count 
+            SELECT p.id, p.title, p.category, CAST(COUNT(c.id) AS INTEGER) as click_count 
             FROM products p 
             LEFT JOIN clicks c ON p.id = c.product_id 
-            GROUP BY p.id, p.title
+            GROUP BY p.id, p.title, p.category
+            ORDER BY click_count DESC
         `;
         const [rows] = await db.query(query);
         res.json(rows);
     } catch (err) {
-        console.error(err);
         res.status(500).json({ error: 'Database error' });
     }
 });
 
-// Login
-app.post('/login', loginLimiter, async (req, res) => {
+// Admin-Only Backup/Export API
+app.get('/api/export-products', authenticateToken, async (req, res) => {
+    try {
+        const [products] = await db.query('SELECT * FROM products ORDER BY id DESC');
+        const [stats] = await db.query(`
+            SELECT p.id, CAST(COUNT(c.id) AS INTEGER) as click_count 
+            FROM products p 
+            LEFT JOIN clicks c ON p.id = c.product_id 
+            GROUP BY p.id
+        `);
+        
+        const exportData = products.map(p => ({
+            ...p,
+            analytics: stats.find(s => s.id === p.id) || { click_count: 0 }
+        }));
+        
+        res.json(exportData);
+    } catch (err) {
+        res.status(500).json({ error: 'Export failure' });
+    }
+});
+
+// Authentication
+app.post('/api/login', loginLimiter, async (req, res) => {
     const { username, password } = req.body;
     try {
         const [rows] = await db.query('SELECT * FROM users WHERE username = $1', [username]);
-        if (rows.length === 0) {
-            return res.status(401).json({ success: false, error: 'User not found' });
-        }
+        if (rows.length === 0) return res.status(401).json({ success: false, error: 'Access denied' });
         
         const user = rows[0];
         const isMatch = await bcrypt.compare(password, user.password);
@@ -234,25 +242,32 @@ app.post('/login', loginLimiter, async (req, res) => {
             res.status(401).json({ success: false, error: 'Invalid password' });
         }
     } catch (err) {
-        console.error('Login error:', err);
-        res.status(500).json({ success: false, error: 'Internal system error' });
+        res.status(500).json({ success: false, error: 'Internal error' });
     }
 });
 
-// Fallback
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/store.html'));
+// Fallback & Error Handling
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, '../frontend/store.html'));
 });
 
-// Global Error Handler (Crucial for Cloudinary/Multer errors)
 app.use((err, req, res, next) => {
-    console.error('GLOBAL ERROR:', err);
-    res.status(err.status || 500).json({
+    console.error(`[INTERNAL_ERROR]:`, err);
+    res.status(500).json({
         success: false,
-        error: err.message || 'Internal system error'
+        error: 'Critical system synchronization failure. The archive remains secure.'
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+const server = app.listen(PORT, () => {
+    console.log(`[CORE_ACTIVE] Velixa Platform running on port ${PORT}`);
+});
+
+// Graceful Shutdown
+process.on('SIGTERM', () => {
+    console.info('SIGTERM signal received. Closing server...');
+    server.close(() => {
+        console.log('Server closed. Database pool remains managed by driver.');
+        process.exit(0);
+    });
 });

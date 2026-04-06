@@ -9,21 +9,22 @@
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
     :root {
-      --primary: #818cf8;
-      --primary-hover: #6366f1;
-      --bg: #050505;
-      --card: rgba(20, 20, 20, 0.7);
-      --border: rgba(255, 255, 255, 0.08);
-      --text: #ffffff;
-      --text-muted: #888888;
-      --accent: #10b981;
+      --primary: #38bdf8;
+      --primary-hover: #0ea5e9;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #22c55e;
       --danger: #ef4444;
       --glass: rgba(255, 255, 255, 0.03);
       --font-main: 'Outfit', sans-serif;
       --font-ui: 'Inter', sans-serif;
-      --ease: cubic-bezier(0.23, 1, 0.32, 1);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     *,
@@ -37,7 +38,7 @@
     body {
       font-family: var(--font-main);
       background: var(--bg);
-      background: radial-gradient(circle at top left, #1e1b4b, #0f172a);
+      background: radial-gradient(circle at top left, #111827, #0f172a);
       color: var(--text);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
@@ -57,13 +58,12 @@
 
     .login-card {
       width: 100%;
-      max-width: 420px;
-      padding: 3rem 2.5rem;
+      max-width: 380px;
+      padding: 2.5rem;
       background: var(--card);
-      backdrop-filter: blur(20px);
       border: 1px solid var(--border);
-      border-radius: 24px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
       text-align: center;
     }
 
@@ -92,12 +92,14 @@
 
     .input-group input {
       width: 100%;
-      padding: 12px 16px;
-      background: var(--glass);
+      padding: 10px 14px;
+      background: #0f172a;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 6px;
       color: var(--text);
       outline: none;
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
     }
 
     .input-group input:focus {
@@ -106,12 +108,12 @@
 
     .btn-primary {
       width: 100%;
-      padding: 14px;
+      padding: 10px 14px;
       background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 1rem;
+      color: #0f172a;
+      border: 1px solid var(--primary-hover);
+      border-radius: 6px;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
@@ -153,26 +155,21 @@
     }
 
     .logo span {
-      background: linear-gradient(to right, #818cf8, #c084fc);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--primary);
     }
 
     .nav-links {
       display: flex;
-      gap: 2rem;
+      gap: 1.5rem;
       align-items: center;
-      margin-left: 3rem;
+      margin-left: 2rem;
     }
 
     .nav-link {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
+      font-size: 0.8rem;
       color: var(--text-muted);
       text-decoration: none;
-      transition: color 0.3s;
+      transition: color 0.2s;
       font-weight: 500;
     }
 
@@ -193,22 +190,22 @@
     /* ── ANALYTICS ── */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 1.5rem;
       margin-bottom: 3rem;
     }
 
     .stat-card {
       background: var(--card);
-      padding: 2rem;
-      border-radius: 24px;
+      padding: 1.5rem;
+      border-radius: 8px;
       border: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       gap: 12px;
-      transition: all 0.4s var(--ease);
+      transition: all 0.2s;
       position: relative;
-      overflow: hidden;
+      min-width: 0;
     }
 
     .stat-card:hover {
@@ -240,6 +237,10 @@
       font-weight: 300;
       font-family: 'Outfit';
       letter-spacing: -0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
     }
 
     .stat-card.accent::after {
@@ -248,12 +249,12 @@
 
     .stat-card.hits::after {
       background: var(--accent);
-      opacity: 1;
+      opacity: 0.5;
     }
 
     .charts-row {
       display: grid;
-      grid-template-columns: 1fr 340px;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
       gap: 1.5rem;
       margin-bottom: 2rem;
     }
@@ -263,8 +264,8 @@
     .chart-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 1.5rem;
+      border-radius: 8px;
+      padding: 1.25rem;
     }
 
     .chart-card h2 {
@@ -284,24 +285,42 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px;
-      background: var(--glass);
-      border-radius: 12px;
+      padding: 10px 14px;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 6px;
       border: 1px solid var(--border);
+      min-width: 0;
+      overflow: hidden;
+    }
+
+
+    .leader-info {
+      flex: 1;
+      min-width: 0;
     }
 
     .leader-info h4 {
+      margin: 0 0 2px 0;
       font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 2px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .leader-info span {
+      display: block;
       font-size: 0.75rem;
       color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
     }
 
     .leader-hits {
+      padding-left: 1rem;
+      flex-shrink: 0;
       font-family: var(--font-ui);
       font-weight: 600;
       color: var(--accent);
@@ -323,7 +342,7 @@
 
     .card {
       background: var(--card);
-      border-radius: 24px;
+      border-radius: 8px;
       border: 1px solid var(--border);
       overflow: hidden;
     }
@@ -357,20 +376,21 @@
     .form-group input,
     .form-group select {
       width: 100%;
-      padding: 12px 16px;
-      background: var(--glass);
+      padding: 10px 14px;
+      background: #0f172a;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 6px;
       color: var(--text);
       outline: none;
       font-family: inherit;
+      font-size: 0.9rem;
       appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 16px center;
-      background-size: 16px;
+      background-position: right 14px center;
+      background-size: 14px;
       cursor: pointer;
-      transition: all 0.3s var(--ease);
+      transition: border-color 0.2s;
     }
 
     .form-group select:hover {
@@ -642,6 +662,90 @@
         gap: 2rem !important;
       }
     }
+
+    /* ──────────────────────────────────────
+       MODALS
+       ────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 2rem;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: inherit;
+      z-index: 10;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    .btn-outline {
+      padding: 8px 16px;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--text);
+    }
+
+    /* ──── FIXES ──── */
+    #edit-modal .modal-content {
+      max-width: 480px;
+    }
+
+    #stats-modal .modal-content {
+      max-width: 800px;
+    }
   </style>
 </head>
 
@@ -650,7 +754,7 @@
   <!-- LOGIN -->
   <div id="lock-screen">
     <form class="login-card" onsubmit="event.preventDefault(); unlock();">
-      <h1>Archive Access</h1>
+      <h1>Velixa Access</h1>
       <p>Authenticate to continue</p>
       <div class="input-group">
         <label>Operator</label>
@@ -677,6 +781,9 @@
       </div>
       <div style="display:flex; gap:12px;">
         <button
+          style="padding:10px 20px; background:var(--primary); border:1px solid var(--primary-hover); color:white; border-radius:100px; cursor:pointer; font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em;"
+          onclick="openEntryModal()">Secure New Record</button>
+        <button
           style="padding:10px 20px; background:var(--glass); border:1px solid var(--border); color:white; border-radius:100px; cursor:pointer; font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em;"
           onclick="exportDatabase()">Export Archive</button>
         <button
@@ -688,22 +795,27 @@
     <main class="container">
       <div class="stats-grid">
         <div class="stat-card accent">
-          <div class="label">Total Archive</div>
+          <div class="label">Total Items</div>
           <div class="value" id="s-total">0</div>
         </div>
         <div class="stat-card hits">
-          <div class="label">Archive Hits</div>
+          <div class="label">Total Hits</div>
           <div class="value" id="s-clicks">0</div>
         </div>
-        <div class="stat-card">
+        <div class="stat-card" style="min-width: 0;">
           <div class="label">Top Performer</div>
-          <div class="value" id="s-leader" style="font-size: 1.2rem; font-weight: 500;">None</div>
+          <div class="value" id="s-leader"
+            style="font-size: 1.2rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; width: 100%; min-width: 0;">
+            None</div>
         </div>
       </div>
 
       <div class="charts-row">
         <div class="chart-card">
-          <h2>Performance Analytics</h2>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+            <h2 style="margin:0;">Performance Analytics</h2>
+            <button class="btn-outline" onclick="openStatsModal()">View All Stats</button>
+          </div>
           <div style="height: 300px;"><canvas id="clickChart"></canvas></div>
         </div>
         <div class="chart-card">
@@ -712,57 +824,10 @@
         </div>
       </div>
 
-      <div class="data-grid">
-        <aside class="card">
-          <div class="card-header">
-            <h2 id="form-mode-label">Record Entry</h2>
-          </div>
-          <div class="form-body">
-            <input type="hidden" id="edit-id">
-            <div class="form-group"><label>Identity Title</label><input type="text" id="f-title"
-                placeholder="Object Name"></div>
-            <div class="form-group"><label>Value (INR)</label><input type="number" id="f-price" placeholder="2999">
-            </div>
-            <div class="form-group"><label>Sector</label>
-              <select id="f-cat">
-                <option value="tech">Tech & Gadgets</option>
-                <option value="fashion">Fashion Sector</option>
-                <option value="home">Interior Space</option>
-                <option value="fitness">Human Performance</option>
-              </select>
-            </div>
-            <div class="form-group"><label>Secure Link</label><input type="text" id="f-link" placeholder="https://...">
-            </div>
-            <div class="form-group"><label>Intelligence Description</label>
-              <textarea id="f-desc" placeholder="Enter object specifications..."
-                style="width: 100%; padding: 12px 16px; background: var(--glass); border: 1px solid var(--border); border-radius: 12px; color: var(--text); outline: none; font-family: inherit; min-height: 80px; resize: vertical;"></textarea>
-            </div>
-            <div class="form-group"><label>Visual Representation</label>
-              <div style="display:flex; gap:8px; margin-bottom:8px;">
-                <input type="text" id="f-image-url" placeholder="URL or Emoji" style="flex:1;">
-                <div
-                  style="position:relative; width:40px; height:40px; background:var(--glass); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden;">
-                  <span style="font-size:1.2rem;">📁</span>
-                  <input type="file" id="f-image-file" onchange="previewImage(this)"
-                    style="position:absolute; inset:0; opacity:0; cursor:pointer;">
-                </div>
-              </div>
-              <div id="image-preview"
-                style="width:100%; height:120px; background:var(--glass); border:1px dashed var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center;">
-                <span style="color:var(--text-muted); font-size:0.8rem;">Preview</span>
-              </div>
-            </div>
-            <div style="display:flex; gap:8px; margin-top:1rem;">
-              <button class="btn-primary" onclick="saveProduct()" style="flex:2;">Secure Record</button>
-              <button class="btn-primary" onclick="clearForm()"
-                style="flex:1; background:var(--glass); border:1px solid var(--border);">Reset</button>
-            </div>
-          </div>
-        </aside>
-
+      <div class="data-grid" style="grid-template-columns: 1fr;">
         <section class="card">
           <div class="card-header">
-            <h2>Database Overview</h2>
+            <h2>All Items Overview</h2>
             <input type="text" id="admin-search" placeholder="Filter identity..." oninput="handleAdminSearch()"
               aria-label="Search archive records"
               style="padding:6px 12px; background:var(--glass); border:1px solid var(--border); border-radius:8px; color:white; font-size:0.8rem; width:200px; outline:none;">
@@ -775,6 +840,7 @@
                   <th>Identity</th>
                   <th>Sector</th>
                   <th>Value</th>
+                  <th>Hits</th>
                   <th></th>
                 </tr>
               </thead>
@@ -784,6 +850,81 @@
         </section>
       </div>
     </main>
+
+    <!-- RECORD ENTRY MODAL -->
+    <div id="edit-modal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="form-mode-label">Record Entry</h2>
+          <button class="modal-close" onclick="closeEntryModal()">&times;</button>
+        </div>
+        <div class="form-body">
+          <input type="hidden" id="edit-id">
+          <div class="form-group"><label>Identity Title</label><input type="text" id="f-title"
+              placeholder="Object Name">
+          </div>
+          <div class="form-group"><label>Value (INR)</label><input type="number" id="f-price" placeholder="2999">
+          </div>
+          <div class="form-group"><label>Sector</label>
+            <select id="f-cat">
+              <option value="tech">Tech & Gadgets</option>
+              <option value="fashion">Fashion Sector</option>
+              <option value="home">Interior Space</option>
+              <option value="fitness">Human Performance</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Secure Link</label><input type="text" id="f-link" placeholder="https://...">
+          </div>
+          <div class="form-group"><label>Intelligence Description</label>
+            <textarea id="f-desc" placeholder="Enter object specifications..."
+              style="width: 100%; padding: 12px 16px; background: var(--glass); border: 1px solid var(--border); border-radius: 12px; color: var(--text); outline: none; font-family: inherit; min-height: 80px; resize: vertical;"></textarea>
+          </div>
+          <div class="form-group"><label>Visual Representation</label>
+            <div style="display:flex; gap:8px; margin-bottom:8px;">
+              <input type="text" id="f-image-url" placeholder="URL or Emoji" style="flex:1;">
+              <div
+                style="position:relative; width:40px; height:40px; background:var(--glass); border:1px solid var(--border); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden;">
+                <span style="font-size:1.2rem;">📁</span>
+                <input type="file" id="f-image-file" onchange="previewImage(this)"
+                  style="position:absolute; inset:0; opacity:0; cursor:pointer;">
+              </div>
+            </div>
+            <div id="image-preview"
+              style="width:100%; height:120px; background:var(--glass); border:1px dashed var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center;">
+              <span style="color:var(--text-muted); font-size:0.8rem;">Preview</span>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:1rem;">
+            <button class="btn-primary" onclick="saveProduct()" style="flex:2;">Secure Record</button>
+            <button class="btn-primary" onclick="clearForm()"
+              style="flex:1; background:var(--glass); border:1px solid var(--border);">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FULL STATS MODAL -->
+    <div id="stats-modal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Full Performance Audit</h2>
+          <button class="modal-close"
+            onclick="document.getElementById('stats-modal').classList.remove('active')">&times;</button>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Product Identity</th>
+                <th>Category</th>
+                <th style="text-align:right;">Total Hits</th>
+              </tr>
+            </thead>
+            <tbody id="full-stats-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
     <!-- UNIFIED PREMIUM FOOTER -->
     <footer style="margin-top:auto; padding:6rem 2rem 4rem; background:#080808; border-top:1px solid var(--border);">
@@ -850,7 +991,7 @@
       const errEl = document.getElementById('pw-err');
 
       try {
-        const res = await fetch('/login', {
+        const res = await fetch('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })
@@ -871,66 +1012,89 @@
 
     async function refresh() {
       try {
-        const [all, stats] = await Promise.all([
-          fetch('/products', { headers: { 'Authorization': `Bearer ${currentToken}` } }).then(r => r.json()),
-          fetch('/stats', { headers: { 'Authorization': `Bearer ${currentToken}` } }).then(r => r.json())
+        const [allRes, statsRes] = await Promise.all([
+          fetch('/api/products', { headers: { 'Authorization': `Bearer ${currentToken}` } }),
+          fetch('/api/stats', { headers: { 'Authorization': `Bearer ${currentToken}` } })
         ]);
 
-        if (all.error || stats.error) {
-          console.error("Auth error:", all.error || stats.error);
+        if (allRes.status === 401 || allRes.status === 403 || statsRes.status === 401 || statsRes.status === 403) {
+          console.warn("Session expired or invalid. Redirecting to login.");
+          logout();
           return;
         }
 
-        allProducts = all;
+        const all = await allRes.json();
+        const stats = await statsRes.json();
+
+        if (all.error) {
+          console.error("Products fetch error:", all.error);
+          return;
+        }
+
+        allProducts = Array.isArray(all) ? all : [];
+        const statsList = Array.isArray(stats) ? stats : [];
 
         // Stats summary
-        const statsList = Array.isArray(stats) ? stats : [];
-        const totalClicks = statsList.reduce((s, x) => s + (x.click_count || 0), 0);
-        document.getElementById('s-total').textContent = all.length;
-        document.getElementById('s-clicks').textContent = String(totalClicks).padStart(10, '0');
+        const totalClicks = statsList.reduce((s, x) => s + Number(x.click_count || 0), 0);
+        document.getElementById('s-total').textContent = allProducts.length;
+        document.getElementById('s-clicks').textContent = totalClicks;
 
-        // Merge & Stats (unchanged)
-        const merged = all.map(p => ({ ...p, hits: (statsList.find(s => s.id === p.id) || {}).click_count || 0 }));
+        // Merge & Stats
+        const merged = allProducts.map(p => ({ ...p, hits: (statsList.find(s => s.id === p.id) || {}).click_count || 0 }));
         const sorted = [...merged].sort((a, b) => b.hits - a.hits);
 
         if (sorted[0] && sorted[0].hits > 0) {
           document.getElementById('s-leader').textContent = sorted[0].title;
+        } else {
+          document.getElementById('s-leader').textContent = 'None';
         }
 
-        // Leaderboard (unchanged)
+        // Leaderboard
         const leaderEl = document.getElementById('leaderboard');
         leaderEl.innerHTML = sorted.slice(0, 5).map(p => `
-    <div class="leader-item">
-      <div class="leader-info"><h4>${p.title}</h4><span>Sector: ${p.category}</span></div>
-      <div class="leader-hits">${p.hits} HITS</div>
-    </div>
-  `).join('');
+          <div class="leader-item">
+            <div class="leader-info"><h4 title="${p.title}">${p.title}</h4><span>Sector: ${p.category}</span></div>
+            <div class="leader-hits">${p.hits} HITS</div>
+          </div>
+        `).join('');
 
-        // Chart (unchanged)
-        renderChart(merged);
+        // Full Stats Modal Rendering
+        document.getElementById('full-stats-body').innerHTML = sorted.map(p => `
+          <tr>
+            <td><div title="${p.title}" style="font-weight:500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 400px;">${p.title}</div></td>
+            <td>${p.category}</td>
+            <td style="text-align:right; font-family:var(--font-ui); font-weight:600; color:var(--accent);">${p.hits}</td>
+          </tr>
+        `).join('');
 
-        // Initial table render
-        renderTable(all);
+        // Chart
+        renderChart(sorted.slice(0, 5));
+
+        // Table render
+        renderTable(merged);
       } catch (e) {
-        console.error("Refresh error:", e);
+        console.error("Refresh failure:", e);
+        toast('Connection error. Synchronizing archive failed.');
       }
     }
 
     function renderTable(list) {
       document.getElementById('list-body').innerHTML = list.map(p => `
-    <tr>
-      <td>${p.image && (p.image.startsWith('http') || p.image.startsWith('/uploads')) ? `<img src="${p.image}" style="width:30px;height:30px;border-radius:4px;object-fit:cover;">` : p.image || '📦'}</td>
-      <td>
-        <div style="font-weight:500;">${p.title}</div>
-        <div style="font-size:0.7rem; color:var(--text-muted); max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.description || 'No description'}</div>
-      </td>
-      <td>${p.category}</td><td>₹${p.price}</td>
-      <td>
-        <button class="btn-icon" onclick="prepEdit('${p.id}')">✎</button>
-        <button class="btn-icon" onclick="deleteProduct('${p.id}')" style="margin-left:5px;">✕</button>
-      </td>
-    </tr>
-  `).join('');
+        <tr>
+          <td>${p.image && (p.image.startsWith('http') || p.image.startsWith('/uploads')) ? `<img src="${p.image}" style="width:30px;height:30px;border-radius:4px;object-fit:cover;" loading="lazy">` : p.image || '📦'}</td>
+          <td>
+            <div title="${p.title}" style="font-weight:500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;">${p.title}</div>
+            <div title="${p.description || ''}" style="font-size:0.7rem; color:var(--text-muted); max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.description || 'No description'}</div>
+          </td>
+          <td>${p.category}</td>
+          <td>₹${p.price}</td>
+          <td style="font-family:var(--font-ui); font-weight:600; color:var(--accent);">${p.hits || 0}</td>
+          <td>
+            <button class="btn-icon" onclick="prepEdit('${p.id}')">✎</button>
+            <button class="btn-icon" onclick="deleteProduct('${p.id}')" style="margin-left:5px;">✕</button>
+          </td>
+        </tr>
+      `).join('');
     }
 
     function handleAdminSearch() {
@@ -945,7 +1109,7 @@
 
     async function exportDatabase() {
       try {
-        const res = await fetch('/export-products', {
+        const res = await fetch('/api/export-products', {
           headers: { 'Authorization': `Bearer ${currentToken}` }
         });
         if (!res.ok) throw new Error('Export failed');
@@ -968,7 +1132,7 @@
 
     function renderChart(data) {
       const ctx = document.getElementById('clickChart').getContext('2d');
-      const labels = data.map(p => p.title.length > 15 ? p.title.substring(0, 12) + '...' : p.title);
+      const labels = data.map(p => p.title.length > 20 ? p.title.substring(0, 17) + '...' : p.title);
       const hits = data.map(p => p.hits);
 
       if (clickChart) clickChart.destroy();
@@ -978,9 +1142,9 @@
         data: {
           labels,
           datasets: [{
-            label: 'Archive Hits',
+            label: 'Top 5 hits',
             data: hits,
-            backgroundColor: 'rgba(99, 102, 241, 0.4)',
+            backgroundColor: 'rgba(129, 140, 248, 0.4)',
             borderColor: '#818cf8',
             borderWidth: 1,
             borderRadius: 8
@@ -1004,6 +1168,20 @@
           }
         }
       });
+    }
+
+    // MODAL TRIGGERS
+    function openEntryModal() {
+      clearForm();
+      document.getElementById('edit-modal').classList.add('active');
+    }
+
+    function closeEntryModal() {
+      document.getElementById('edit-modal').classList.remove('active');
+    }
+
+    function openStatsModal() {
+      document.getElementById('stats-modal').classList.add('active');
     }
 
     function previewImage(input) {
@@ -1051,7 +1229,7 @@
         formData.append('image', document.getElementById('f-image-url').value);
       }
 
-      const url = id ? `/products/${id}` : '/products';
+      const url = id ? `/api/products/${id}` : '/api/products';
       const method = id ? 'PUT' : 'POST';
 
       try {
@@ -1064,6 +1242,7 @@
 
         if (res.ok) {
           toast(id ? 'Record updated.' : 'Record secured.');
+          closeEntryModal();
           clearForm();
           refresh();
         } else {
@@ -1077,7 +1256,7 @@
     }
 
     async function prepEdit(id) {
-      const p = await fetch(`/products`, {
+      const p = await fetch(`/api/products`, {
         headers: { 'Authorization': `Bearer ${currentToken}` }
       }).then(r => r.json()).then(list => list.find(x => x.id == id));
       document.getElementById('edit-id').value = p.id;
@@ -1099,12 +1278,13 @@
       }
 
       document.getElementById('form-mode-label').textContent = 'Update Record';
+      document.getElementById('edit-modal').classList.add('active');
     }
 
     async function deleteProduct(id) {
       if (!confirm('Purge this record?')) return;
       try {
-        const res = await fetch(`/products/${id}`, {
+        const res = await fetch(`/api/products/${id}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${currentToken}` }
         });

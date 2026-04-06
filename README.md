@@ -58,7 +58,7 @@ The platform will be available at http://localhost:5000.
 │   ├── schema.sql      # Database structure
 │   └── seed.js         # Initial data population
 └── frontend/           # Static assets (HTML/CSS/JS)
-    ├── store.html      # Public storefront
+    ├── index.html      # Public storefront (Primary Entry)
     ├── admin.html      # Protected administrative axis
     └── uploads/        # Product imagery storage
 ```

@@ -248,7 +248,7 @@ app.post('/api/login', loginLimiter, async (req, res) => {
 
 // Fallback & Error Handling
 app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, '../frontend/store.html'));
+    res.status(404).sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 app.use((err, req, res, next) => {

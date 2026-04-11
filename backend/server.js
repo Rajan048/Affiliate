@@ -90,13 +90,19 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-// Serve static files with aggressive 1-year caching
+// Long cache for assets; HTML must stay revalidating or mobile viewport/CSS updates never reach clients
+const staticRoot = path.join(__dirname, '../frontend');
 const cacheOptions = {
     maxAge: '1y',
     immutable: true,
-    etag: true
+    etag: true,
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+        }
+    }
 };
-app.use(express.static(path.join(__dirname, '../frontend'), cacheOptions));
+app.use(express.static(staticRoot, cacheOptions));
 
 // Validation Rules
 const productValidation = [

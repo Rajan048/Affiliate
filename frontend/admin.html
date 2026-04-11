@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
   <title>Admin Dashboard — Velixa</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap"
@@ -25,6 +26,7 @@
       --font-main: 'Outfit', sans-serif;
       --font-ui: 'Inter', sans-serif;
       --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      color-scheme: dark;
     }
 
     *,
@@ -41,14 +43,25 @@
       background: radial-gradient(circle at top left, #111827, #0f172a);
       color: var(--text);
       min-height: 100vh;
+      min-height: 100dvh;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      padding-left: env(safe-area-inset-left, 0);
+      padding-right: env(safe-area-inset-right, 0);
+    }
+
+    img,
+    canvas,
+    video {
+      max-width: 100%;
+      height: auto;
     }
 
     /* ── LOGIN SCREEN ── */
     #lock-screen {
       position: fixed;
       inset: 0;
+      padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
       background: radial-gradient(circle at center, #312e81, #0f172a);
       display: flex;
       align-items: center;
@@ -132,17 +145,158 @@
     }
 
     .topbar {
-      padding: 0 2rem;
-      height: 72px;
+      padding: 0 clamp(1rem, 4vw, 2rem);
+      padding-top: env(safe-area-inset-top, 0);
+      min-height: 72px;
+      height: auto;
       background: rgba(5, 5, 5, 0.5);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 0.75rem;
       position: sticky;
       top: 0;
       z-index: 1000;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .topbar-btn {
+      padding: 10px 20px;
+      border-radius: 100px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .topbar-btn.primary {
+      background: var(--primary);
+      border: 1px solid var(--primary-hover);
+      color: white;
+    }
+
+    .topbar-btn.secondary {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      color: white;
+    }
+
+    .topbar-btn.danger {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+
+    .topbar-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.1);
+    }
+
+    /* Hamburger menu */
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 10px;
+      margin: -6px -6px -6px 0;
+      line-height: 1;
+      touch-action: manipulation;
+      min-width: 44px;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      top: 0;
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(20px);
+      z-index: 999;
+      flex-direction: column;
+      padding: calc(2rem + env(safe-area-inset-top, 0)) calc(1.25rem + env(safe-area-inset-right, 0)) calc(2rem + env(safe-area-inset-bottom, 0)) calc(1.25rem + env(safe-area-inset-left, 0));
+      gap: 1rem;
+      animation: slideIn 0.3s var(--ease);
+    }
+
+    .mobile-menu.open {
+      display: flex;
+    }
+
+    .mobile-menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .mobile-menu-close {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 2rem;
+      cursor: pointer;
+    }
+
+    .mobile-menu .mobile-nav-link {
+      display: block;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+
+    .mobile-menu .mobile-nav-link:hover {
+      color: var(--text);
+    }
+
+    .mobile-menu .mobile-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 1rem;
+    }
+
+    .mobile-menu .mobile-actions .topbar-btn {
+      width: 100%;
+      text-align: center;
+      padding: 14px 20px;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
 
     .logo {
@@ -152,6 +306,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      white-space: nowrap;
     }
 
     .logo span {
@@ -184,7 +339,9 @@
     .container {
       max-width: 1400px;
       margin: 2rem auto;
-      padding: 0 2rem;
+      padding: 0 clamp(1rem, 4vw, 2rem);
+      padding-bottom: env(safe-area-inset-bottom, 0);
+      width: 100%;
     }
 
     /* ── ANALYTICS ── */
@@ -273,6 +430,11 @@
       margin-bottom: 1.5rem;
       font-weight: 600;
       opacity: 0.8;
+    }
+
+    .chart-canvas-wrap {
+      height: 300px;
+      position: relative;
     }
 
     .leaderboard {
@@ -414,11 +576,17 @@
 
     .table-container {
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
+      min-width: 600px;
+    }
+
+    .table-container table td div[title] {
+      max-width: 100% !important;
     }
 
     th {
@@ -428,6 +596,7 @@
       color: var(--text-muted);
       text-transform: uppercase;
       border-bottom: 1px solid var(--border);
+      white-space: nowrap;
     }
 
     td {
@@ -437,13 +606,17 @@
     }
 
     .btn-icon {
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       background: var(--glass);
       border: 1px solid var(--border);
       border-radius: 6px;
       cursor: pointer;
       color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
     }
 
     .btn-icon:hover {
@@ -455,7 +628,7 @@
       position: fixed;
       bottom: 2rem;
       right: 2rem;
-      z-index: 1000;
+      z-index: 3000;
     }
 
     .toast {
@@ -473,6 +646,76 @@
       transform: translateX(0);
     }
 
+    /* ── ADMIN FOOTER ── */
+    .admin-footer {
+      margin-top: auto;
+      padding: 6rem clamp(1rem, 4vw, 2rem) calc(4rem + env(safe-area-inset-bottom, 0));
+      background: #080808;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 4rem;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .footer-col h4 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-weight: 600;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .footer-col ul a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-col ul a:hover {
+      color: var(--text);
+    }
+
+    .footer-bottom {
+      max-width: 1400px;
+      margin: 4rem auto 0;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer-bottom-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-bottom-links a {
+      color: inherit;
+      text-decoration: none;
+    }
+
     /* ──────────────────────────────────────
        RESPONSIVE — TABLET (≤1000px)
        ────────────────────────────────────── */
@@ -486,9 +729,9 @@
         height: 60px;
       }
 
-      .topbar button {
-        padding: 8px 14px !important;
-        font-size: 0.65rem !important;
+      .topbar-btn {
+        padding: 8px 14px;
+        font-size: 0.65rem;
       }
 
       .nav-links {
@@ -517,6 +760,35 @@
       .data-grid {
         grid-template-columns: 1fr;
       }
+
+      .card-header input[style*="width:200px"] {
+        width: min(100%, 260px) !important;
+      }
+
+      .footer-bottom-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .topbar-actions {
+        display: none;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: inline-flex;
+      }
+
+      .topbar {
+        height: auto;
+        padding: 0.8rem 1rem;
+        padding-top: max(0.8rem, env(safe-area-inset-top, 0));
+      }
     }
 
     /* ──────────────────────────────────────
@@ -526,21 +798,19 @@
       .topbar {
         height: auto;
         padding: 0.8rem 1rem;
-        flex-direction: column;
-        gap: 0.8rem;
-        align-items: stretch;
+        padding-top: max(0.8rem, env(safe-area-inset-top, 0));
       }
 
-      .topbar>div:first-child {
-        justify-content: space-between;
-      }
-
-      .topbar>div:last-child {
-        justify-content: flex-end;
+      .topbar-actions {
+        display: none;
       }
 
       .nav-links {
-        margin-left: 2rem;
+        display: none;
+      }
+
+      .hamburger {
+        display: inline-flex;
       }
 
       .login-card {
@@ -560,10 +830,13 @@
         padding: 1rem;
       }
 
-      th,
-      td {
-        padding: 0.8rem 1rem;
-        font-size: 0.8rem;
+      .chart-card h2 {
+        font-size: 0.95rem;
+      }
+
+      .chart-card>div[style*="justify-content:space-between"] {
+        flex-wrap: wrap;
+        gap: 0.8rem;
       }
 
       .card-header {
@@ -575,38 +848,80 @@
       .card-header input {
         width: 100% !important;
       }
+
+      table {
+        min-width: 520px;
+      }
+
+      .form-body>div[style*="display:flex; gap:8px; margin-top:1rem;"] {
+        flex-direction: column;
+      }
+
+      .form-body>div[style*="display:flex; gap:8px; margin-top:1rem;"] .btn-primary {
+        width: 100%;
+      }
+
+      .form-body>div[style*="display:flex; gap:8px; margin-bottom:8px;"] {
+        flex-wrap: wrap;
+      }
+
+      .modal-content {
+        margin: 1rem;
+        max-height: calc(100vh - 2rem);
+      }
+
+      .modal-header {
+        padding: 1rem 1.25rem;
+      }
+
+      .modal-overlay {
+        padding: 0;
+        align-items: flex-end;
+      }
+
+      .modal-content {
+        border-radius: 16px 16px 0 0;
+        max-height: 92vh;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
     }
 
     /* ──────────────────────────────────────
        RESPONSIVE — MOBILE (≤480px)
        ────────────────────────────────────── */
     @media (max-width: 480px) {
-      .logo {
-        font-size: 1rem;
+      .topbar {
+        height: auto;
+        padding: 0.8rem 1rem;
+        padding-top: max(0.8rem, env(safe-area-inset-top, 0));
       }
 
-      .nav-link {
-        font-size: 0.65rem;
+      .input-group input,
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        font-size: 16px;
       }
 
-      .nav-links {
-        margin-left: 1rem;
-        gap: 1rem;
-      }
-
-      .topbar>div:last-child {
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .topbar button {
-        padding: 6px 12px !important;
-        font-size: 0.6rem !important;
-        flex: 1;
+      .login-card {
+        padding: 2rem 1.5rem;
+        width: calc(100% - 2rem);
+        max-width: 360px;
       }
 
       .stats-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
       }
 
       .stat-card .value {
@@ -621,10 +936,41 @@
         padding: 1rem;
       }
 
-      th,
-      td {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.75rem;
+      .chart-card {
+        padding: 0.75rem;
+      }
+
+      .chart-card h2 {
+        font-size: 0.85rem;
+      }
+
+      .chart-canvas-wrap {
+        height: 220px;
+      }
+
+      table {
+        min-width: 420px;
+      }
+
+      .btn-outline {
+        padding: 6px 12px;
+        font-size: 0.6rem;
+      }
+
+      .leaderboard {
+        gap: 8px;
+      }
+
+      .leader-item {
+        padding: 8px 10px;
+      }
+
+      .leader-info h4 {
+        font-size: 0.8rem;
+      }
+
+      .leader-hits {
+        font-size: 0.8rem;
       }
 
       .toast-container {
@@ -637,29 +983,57 @@
         padding: 10px 16px;
         font-size: 0.85rem;
       }
+
+      .admin-footer {
+        padding: 3rem 1rem calc(2rem + env(safe-area-inset-bottom, 0));
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      th,
+      td {
+        padding: 0.8rem 1rem;
+      }
+
+      .logo {
+        font-size: 1.05rem;
+        letter-spacing: 0.06em;
+      }
+
+      .card-header h2 {
+        font-size: 0.9rem;
+      }
     }
 
-    /* ──── ADMIN FOOTER RESPONSIVE ──── */
-    @media (max-width: 768px) {
-      footer>div:first-child {
-        grid-template-columns: 1fr 1fr !important;
+    /* ──────────────────────────────────────
+       RESPONSIVE — TINY (≤360px)
+       ────────────────────────────────────── */
+    @media (max-width: 360px) {
+      .container {
+        padding: 0 0.75rem;
       }
 
-      footer>div:last-child {
-        flex-direction: column !important;
-        gap: 1rem !important;
-        text-align: center !important;
-      }
-    }
-
-    @media (max-width: 480px) {
-      footer {
-        padding: 3rem 1rem 2rem !important;
+      .stats-grid {
+        gap: 0.75rem;
       }
 
-      footer>div:first-child {
-        grid-template-columns: 1fr !important;
-        gap: 2rem !important;
+      .stat-card {
+        padding: 1rem;
+      }
+
+      .stat-card .value {
+        font-size: 1.5rem;
+      }
+
+      .login-card {
+        padding: 1.5rem 1rem;
+      }
+
+      .login-card h1 {
+        font-size: 1.3rem;
       }
     }
 
@@ -746,6 +1120,20 @@
     #stats-modal .modal-content {
       max-width: 800px;
     }
+
+    /* ── SCROLLBAR STYLES ── */
+    .table-container::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
   </style>
 </head>
 
@@ -772,25 +1160,35 @@
   <!-- APP -->
   <div id="app">
     <header class="topbar">
-      <div style="display:flex; align-items:center;">
+      <div class="topbar-left">
         <div class="logo"><span>Velixa</span> CORE</div>
         <nav class="nav-links">
           <a href="/" class="nav-link">Store</a>
           <a href="/admin.html" class="nav-link active">Admin</a>
         </nav>
       </div>
-      <div style="display:flex; gap:12px;">
-        <button
-          style="padding:10px 20px; background:var(--primary); border:1px solid var(--primary-hover); color:white; border-radius:100px; cursor:pointer; font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em;"
-          onclick="openEntryModal()">Secure New Record</button>
-        <button
-          style="padding:10px 20px; background:var(--glass); border:1px solid var(--border); color:white; border-radius:100px; cursor:pointer; font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em;"
-          onclick="exportDatabase()">Export Archive</button>
-        <button
-          style="padding:10px 20px; background:rgba(239, 68, 68, 0.1); border:1px solid var(--danger); color:var(--danger); border-radius:100px; cursor:pointer; font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em;"
-          onclick="logout()">Terminate</button>
+      <div class="topbar-actions">
+        <button class="topbar-btn primary" onclick="openEntryModal()">Secure New Record</button>
+        <button class="topbar-btn secondary" onclick="exportDatabase()">Export Archive</button>
+        <button class="topbar-btn danger" onclick="logout()">Terminate</button>
       </div>
+      <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Open menu">☰</button>
     </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+      <div class="mobile-menu-header">
+        <div class="logo"><span>Velixa</span> CORE</div>
+        <button class="mobile-menu-close" onclick="toggleMobileMenu()">×</button>
+      </div>
+      <a href="/" class="mobile-nav-link">Store</a>
+      <a href="/admin.html" class="mobile-nav-link">Admin</a>
+      <div class="mobile-actions">
+        <button class="topbar-btn primary" onclick="openEntryModal(); toggleMobileMenu();">Secure New Record</button>
+        <button class="topbar-btn secondary" onclick="exportDatabase(); toggleMobileMenu();">Export Archive</button>
+        <button class="topbar-btn danger" onclick="logout()">Terminate</button>
+      </div>
+    </div>
 
     <main class="container">
       <div class="stats-grid">
@@ -816,7 +1214,7 @@
             <h2 style="margin:0;">Performance Analytics</h2>
             <button class="btn-outline" onclick="openStatsModal()">View All Stats</button>
           </div>
-          <div style="height: 300px;"><canvas id="clickChart"></canvas></div>
+          <div class="chart-canvas-wrap"><canvas id="clickChart"></canvas></div>
         </div>
         <div class="chart-card">
           <h2>Leaderboard</h2>
@@ -927,38 +1325,35 @@
     </div>
 
     <!-- UNIFIED PREMIUM FOOTER -->
-    <footer style="margin-top:auto; padding:6rem 2rem 4rem; background:#080808; border-top:1px solid var(--border);">
-      <div style="max-width:1400px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:4rem;">
+    <footer class="admin-footer">
+      <div class="footer-grid">
         <div>
           <div class="logo" style="margin-bottom:1.5rem;"><span>Velixa</span> CORE</div>
           <p style="color:var(--text-muted); font-size:0.9rem; max-width:400px;">Internal administrative axis for
             curated archive synchronization and high-performance object management.</p>
         </div>
 
-        <div style="display:flex; flex-direction:column; gap:1.2rem;">
-          <h4 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.2em; font-weight:600;">Sectors</h4>
-          <ul
-            style="list-style:none; display:flex; flex-direction:column; gap:0.8rem; font-size:0.85rem; color:var(--text-muted);">
+        <div class="footer-col">
+          <h4>Sectors</h4>
+          <ul>
             <li>Internal Database</li>
             <li>Archival Records</li>
             <li>System Logs</li>
           </ul>
         </div>
 
-        <div style="display:flex; flex-direction:column; gap:1.2rem;">
-          <h4 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.2em; font-weight:600;">Platform</h4>
-          <ul
-            style="list-style:none; display:flex; flex-direction:column; gap:0.8rem; font-size:0.85rem; color:var(--text-muted);">
-            <li><a href="/" style="color:inherit; text-decoration:none;">View Store</a></li>
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <ul>
+            <li><a href="/">View Store</a></li>
             <li>Security Protocols</li>
             <li>System Health</li>
           </ul>
         </div>
 
-        <div style="display:flex; flex-direction:column; gap:1.2rem;">
-          <h4 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.2em; font-weight:600;">Social</h4>
-          <ul
-            style="list-style:none; display:flex; flex-direction:column; gap:0.8rem; font-size:0.85rem; color:var(--text-muted);">
+        <div class="footer-col">
+          <h4>Social</h4>
+          <ul>
             <li>Instagram</li>
             <li>Twitter</li>
             <li>LinkedIn</li>
@@ -966,12 +1361,11 @@
         </div>
       </div>
 
-      <div
-        style="max-width:1400px; margin:4rem auto 0; padding-top:2rem; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-muted);">
+      <div class="footer-bottom">
         <div>&copy; 2026 Velixa CORE. UNAUTHORIZED ACCESS PROHIBITED.</div>
-        <div style="display:flex; gap:20px;">
-          <a href="#" style="color:inherit; text-decoration:none;">Privacy Policy</a>
-          <a href="#" style="color:inherit; text-decoration:none;">Terms of Service</a>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
         </div>
       </div>
     </footer>
@@ -1053,7 +1447,7 @@
         const leaderEl = document.getElementById('leaderboard');
         leaderEl.innerHTML = sorted.slice(0, 5).map(p => `
           <div class="leader-item">
-            <div class="leader-info"><h4 title="${p.title}">${p.title}</h4><span>Sector: ${p.category}</span></div>
+            <div class="leader-info"><h4 title="${esc(p.title)}">${esc(p.title)}</h4><span>Sector: ${p.category}</span></div>
             <div class="leader-hits">${p.hits} HITS</div>
           </div>
         `).join('');
@@ -1081,17 +1475,19 @@
     function renderTable(list) {
       document.getElementById('list-body').innerHTML = list.map(p => `
         <tr>
-          <td>${p.image && (p.image.startsWith('http') || p.image.startsWith('/uploads')) ? `<img src="${p.image}" style="width:30px;height:30px;border-radius:4px;object-fit:cover;" loading="lazy">` : p.image || '📦'}</td>
+          <td>${p.image && (p.image.startsWith('http') || p.image.startsWith('/uploads')) ? `<img src="${p.image}" style="width:36px;height:36px;border-radius:4px;object-fit:cover;" loading="lazy">` : `<div style="font-size:1.5rem;">${p.image || '📦'}</div>`}</td>
           <td>
-            <div title="${p.title}" style="font-weight:500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;">${p.title}</div>
-            <div title="${p.description || ''}" style="font-size:0.7rem; color:var(--text-muted); max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.description || 'No description'}</div>
+            <div title="${esc(p.title)}" style="font-weight:600; color:var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px;">${esc(p.title)}</div>
+            <div title="${esc(p.description) || ''}" style="font-size:0.75rem; color:var(--text-muted); max-width:280px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${esc(p.description) || 'No documentation.'}</div>
           </td>
-          <td>${p.category}</td>
-          <td>₹${p.price}</td>
-          <td style="font-family:var(--font-ui); font-weight:600; color:var(--accent);">${p.hits || 0}</td>
-          <td>
-            <button class="btn-icon" onclick="prepEdit('${p.id}')">✎</button>
-            <button class="btn-icon" onclick="deleteProduct('${p.id}')" style="margin-left:5px;">✕</button>
+          <td><span style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted);">${p.category}</span></td>
+          <td>₹${parseInt(p.price).toLocaleString()}</td>
+          <td style="font-family:var(--font-ui); font-weight:700; color:var(--accent); font-size:1rem;">${p.hits || 0}</td>
+          <td style="text-align:right;">
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+              <button class="btn-icon" onclick="prepEdit('${p.id}')">✎</button>
+              <button class="btn-icon" onclick="deleteProduct('${p.id}')" style="color:var(--danger); border-color:rgba(239, 68, 68, 0.2);">✕</button>
+            </div>
           </td>
         </tr>
       `).join('');
@@ -1303,6 +1699,13 @@
       const t = document.createElement('div'); t.className = 'toast visible'; t.textContent = msg;
       document.getElementById('toast-container').appendChild(t);
       setTimeout(() => t.remove(), 3000);
+    }
+
+    function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobile-menu').classList.toggle('open');
+      document.body.style.overflow = document.getElementById('mobile-menu').classList.contains('open') ? 'hidden' : '';
     }
 
     function checkSession() {

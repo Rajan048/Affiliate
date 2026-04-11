@@ -7,7 +7,7 @@
 (function () {
   var m = document.querySelector('meta[name="velixa-api-base"]');
   var meta = m && m.getAttribute('content') ? m.getAttribute('content').trim() : '';
-  var FALLBACK = '';
+  var FALLBACK = 'https://affiliate-xct7.onrender.com';
   var raw = meta || FALLBACK;
   window.__API_BASE__ = raw.replace(/\/$/, '');
 })();

@@ -90,17 +90,26 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-// Long cache for assets; HTML must stay revalidating or mobile viewport/CSS updates never reach clients
 const staticRoot = path.join(__dirname, '../frontend');
+
+function sendHtmlFresh(res, relativeName) {
+    res.set({
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+        Pragma: 'no-cache',
+        Expires: '0'
+    });
+    res.sendFile(path.join(staticRoot, relativeName));
+}
+
+// HTML must never be served from stale CDN/browser cache (missing viewport = “shrunk desktop” on phones)
+app.get('/', (req, res) => sendHtmlFresh(res, 'index.html'));
+app.get('/index.html', (req, res) => sendHtmlFresh(res, 'index.html'));
+app.get('/admin.html', (req, res) => sendHtmlFresh(res, 'admin.html'));
+
 const cacheOptions = {
     maxAge: '1y',
     immutable: true,
-    etag: true,
-    setHeaders: (res, filePath) => {
-        if (filePath.endsWith('.html')) {
-            res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
-        }
-    }
+    etag: true
 };
 app.use(express.static(staticRoot, cacheOptions));
 

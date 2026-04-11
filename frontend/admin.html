@@ -1373,8 +1373,11 @@
 
   <div class="toast-container" id="toast-container"></div>
 
+  <script src="/api-config.js"></script>
   <script>
-    const API_URL = '';
+    const API_BASE = (typeof window !== 'undefined' && window.__API_BASE__) ? String(window.__API_BASE__).replace(/\/$/, '') : '';
+    function api(path) { return API_BASE + path; }
+
     let currentToken = localStorage.getItem('velixa_token');
     let clickChart = null;
     let allProducts = []; // Local cache for filtering
@@ -1385,7 +1388,7 @@
       const errEl = document.getElementById('pw-err');
 
       try {
-        const res = await fetch('/api/login', {
+        const res = await fetch(api('/api/login'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })
@@ -1407,8 +1410,8 @@
     async function refresh() {
       try {
         const [allRes, statsRes] = await Promise.all([
-          fetch('/api/products', { headers: { 'Authorization': `Bearer ${currentToken}` } }),
-          fetch('/api/stats', { headers: { 'Authorization': `Bearer ${currentToken}` } })
+          fetch(api('/api/products'), { headers: { 'Authorization': `Bearer ${currentToken}` } }),
+          fetch(api('/api/stats'), { headers: { 'Authorization': `Bearer ${currentToken}` } })
         ]);
 
         if (allRes.status === 401 || allRes.status === 403 || statsRes.status === 401 || statsRes.status === 403) {
@@ -1505,7 +1508,7 @@
 
     async function exportDatabase() {
       try {
-        const res = await fetch('/api/export-products', {
+        const res = await fetch(api('/api/export-products'), {
           headers: { 'Authorization': `Bearer ${currentToken}` }
         });
         if (!res.ok) throw new Error('Export failed');
@@ -1625,11 +1628,11 @@
         formData.append('image', document.getElementById('f-image-url').value);
       }
 
-      const url = id ? `/api/products/${id}` : '/api/products';
+      const path = id ? `/api/products/${id}` : '/api/products';
       const method = id ? 'PUT' : 'POST';
 
       try {
-        const res = await fetch(url, {
+        const res = await fetch(api(path), {
           method,
           headers: { 'Authorization': `Bearer ${currentToken}` },
           body: formData
@@ -1652,7 +1655,7 @@
     }
 
     async function prepEdit(id) {
-      const p = await fetch(`/api/products`, {
+      const p = await fetch(api('/api/products'), {
         headers: { 'Authorization': `Bearer ${currentToken}` }
       }).then(r => r.json()).then(list => list.find(x => x.id == id));
       document.getElementById('edit-id').value = p.id;
@@ -1680,7 +1683,7 @@
     async function deleteProduct(id) {
       if (!confirm('Purge this record?')) return;
       try {
-        const res = await fetch(`/api/products/${id}`, {
+        const res = await fetch(api(`/api/products/${id}`), {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${currentToken}` }
         });

@@ -954,7 +954,11 @@
     </div>
   </footer>
 
+  <script src="/api-config.js"></script>
   <script>
+    const API_BASE = (typeof window !== 'undefined' && window.__API_BASE__) ? String(window.__API_BASE__).replace(/\/$/, '') : '';
+    function api(path) { return API_BASE + path; }
+
     let products = [];
     let activeCategory = 'all';
 
@@ -968,7 +972,7 @@
 
     async function loadProducts() {
       try {
-        const res = await fetch('/api/products');
+        const res = await fetch(api('/api/products'));
         products = await res.json();
         handleFilter();
       } catch (e) {
@@ -1054,7 +1058,7 @@
 
     async function recordClick(productId, link) {
       try {
-        await fetch('/api/track-click', {
+        await fetch(api('/api/track-click'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ product_id: productId })

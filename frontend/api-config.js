@@ -1,6 +1,13 @@
 /**
- * Vercel (frontend) + Render (API): set your Render web service URL here, no trailing slash.
- * Example: window.__API_BASE__ = 'https://your-api.onrender.com';
- * Same host as API (e.g. localhost or Render serving both): leave ''.
+ * Vercel (frontend) + Render (API): point the browser at your Render service.
+ *
+ * Option A — Recommended: set <meta name="velixa-api-base" content="https://YOUR.onrender.com"> in index.html + admin.html <head>
+ * Option B: set FALLBACK below (no trailing slash). Meta wins if both are set.
  */
-window.__API_BASE__ = '';
+(function () {
+  var m = document.querySelector('meta[name="velixa-api-base"]');
+  var meta = m && m.getAttribute('content') ? m.getAttribute('content').trim() : '';
+  var FALLBACK = '';
+  var raw = meta || FALLBACK;
+  window.__API_BASE__ = raw.replace(/\/$/, '');
+})();
